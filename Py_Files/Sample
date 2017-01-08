@@ -1,0 +1,15 @@
+import plotly.plotly as py
+import plotly.graph_objs as go
+import plotly.tools as tls
+
+"""tls.set_credentials_file(username='gap725', api_key='sN9bSTQYxJnMkIq90st1')
+
+
+trace1 = go.Scatter( x = [1,2], y =[1,2])
+trace2= go.Scatter(x = [1,2], y=[2,1])
+py.iplot([trace1, trace2])"""
+
+import matplotlib.pyplot as plt
+plt.plot([1,2,3,4])
+plt.ylabel('some numbers')
+plt.show()

@@ -1,0 +1,84 @@
+import csv
+import plotly.plotly as py
+import plotly.graph_objs as go
+import plotly.tools as tls
+import matplotlib.pyplot as plt
+
+#insert = input('What day do you want to start from: (enter it in dd-mm-yy form)')
+#amount = float(input('How much more money would you like to make? (enter a percentage increase you would like)'))
+number_of_days = int(input('How many days would you like the graph to show?: '))
+dates = []
+prices = []
+x_axis= []
+def get_data(filename):
+    with open(filename, 'r') as csvfile:
+        csvFileReader = csv.reader(csvfile)
+        next(csvFileReader)	# skipping column names
+        for row in csvFileReader:
+            #dates.append(int(row[0].split('-')[0]))
+            dates.append(str(row[0]))
+            prices.append(float(row[1]))
+	return None
+
+get_data('aapl.csv.xls')
+
+def set_x_axis():
+    for i in range(0, number_of_days):
+        x_axis.append(i)
+prices.reverse()
+dates.reverse()#old at beginning, new at very end
+
+def predictions():
+    for x in range(100):
+        prices.append(prices[len(prices)-1])
+
+def find_index(item, lst):
+    numbers=[]
+    for i in range(0, len(lst)):
+        if item == lst[i]:
+            numbers+=[i]
+    return numbers
+#index = find_index(insert,dates)
+#dates= dates[index:len(dates)]
+#prices = prices[index: len(prices)]
+#predictions()
+def find_futures():
+    print('If you purchased your stock on ' + str( insert) + 'then you could have sold your stock on the following dates to have at least a ' + str(amount) + ' pecent profit:' )
+    for k in range( 0, len(dates)):
+        if (prices[0]*(1+ (amount*0.01)))<= prices[k]:
+            print('Date: ' + str(dates[k]) + '      Amount made: ' + str( (prices[k]-prices[0])))
+
+#find_futures()
+def find_rate(lst):
+    rates =[]
+    for f in range(2,30):
+        rates.append((lst[len(lst)-f]/lst[len(lst)-(f+1)])-1)
+    return rates
+
+def apply_current_rates(lst):
+    for k in range(0,5):
+        rates = find_rate(prices)
+        new_price = (prices[len(prices)-1]*(sum(rates)/len(rates))) + prices[len(prices)-1]
+        prices.append(new_price)
+
+apply_current_rates(prices)
+set_x_axis()
+def find_prev_dates(dates, day):
+    day_no_year = day[:len(day)-3]
+    no_year= [k[:len(k)-3] for k in dates]
+    indexes = find_index(day_no_year, no_year)
+    prev_year_prices = [prices[h] for h in indexes]
+    return indexes, prev_year_prices
+
+def boolean_pullout(principal,current, percent):
+    if principal*(1+percent)>=current:
+        return True
+    else:
+        return False
+
+#def before_and_after():
+
+#find_prev_dates(dates, dates[len(dates)-1])
+plt.plot(x_axis,prices[len(prices)-number_of_days:])
+plt.ylabel('stock prices')
+plt.show()
